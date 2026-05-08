@@ -76,11 +76,7 @@ public class StartScreen implements Screen {
         // Draw background
         batch.draw(this.background,0,0,GameConstant.SCREEN_WIDTH,GameConstant.SCREEN_HEIGHT);
         titleSprite.draw(batch);
-//        startButton.setTexture(startButton.getBoundingRectangle().contains(touch.x, touch.y) && Gdx.input.isTouched()? startHover : startTex);
-//        startButton.draw(batch);
-//
-//        optionButton.setTexture(optionButton.getBoundingRectangle().contains(touch.x, touch.y) && Gdx.input.isTouched()? optHover : optTex);
-//        optionButton.draw(batch);
+
 
         if (startButton.getBoundingRectangle().contains(touch.x, touch.y) && Gdx.input.isTouched())
             startButton.setTexture(startHover);
@@ -117,25 +113,6 @@ public class StartScreen implements Screen {
         }
         titleSprite.setScale(titleScale);
     }
-
-
-//    private void handleInput() {
-//        if (Gdx.input.justTouched()) {
-//            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            camera.unproject(touchPos);
-//
-//            if (startButton.getBoundingRectangle().contains(touchPos.x, touchPos.y)) {
-//                startGame();
-//            }
-//        }
-//
-//    }
-
-//    private void startGame() {
-//        //game.setScreen(new GameScreen(game));
-//        //dispose();
-//        ScreenManager.getInstance().setScreen(new GameScreen(game));
-//    }
 
     @Override
     public void resize(int width, int height) {

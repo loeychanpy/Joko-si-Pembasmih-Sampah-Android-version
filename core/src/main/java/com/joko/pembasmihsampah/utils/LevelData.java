@@ -14,7 +14,7 @@ public class LevelData {
         public String levelName;
     }
 
-    // ===== LEVEL 1 (MyWorld from Greenfoot) =====
+    // ===== LEVEL 1 =====
     public static Level LEVEL_1() {
         Level level = new Level();
         level.playerStartX = 34;
@@ -27,8 +27,9 @@ public class LevelData {
         return level;
     }
 
+    //world design not completed
     // ===== LEVEL 2 (Level2 from Greenfoot) =====
-    public static Level LEVEL_2() {
+   /* public static Level LEVEL_2() {
         Level level = new Level();
         level.playerStartX = 1127;
         level.playerStartY = SCREEN_HEIGHT -  598;
@@ -51,18 +52,20 @@ public class LevelData {
         level.difficulty = 3;
         level.levelName = "Level 3 - Boss Fight";
         return level;
-    }
+    }*/
 
     public static Level getLevel(int levelNumber) {
-        switch (levelNumber) {
-            case 1: return LEVEL_1();
-            case 2: return LEVEL_2();
-            case 3: return LEVEL_3();
-            default: return LEVEL_1();
-        }
+//        if there is one or more level could use switch because there is just one level i just use return
+//        switch (levelNumber) {
+//            case 1: return LEVEL_1();
+//            //case 2: return LEVEL_2();
+//            //case 3: return LEVEL_3();
+//            default: return LEVEL_1();
+//        }
+        return LEVEL_1();
     }
 
     public static int getTotalLevels() {
-        return 3;
+        return 1;
     }
 }
