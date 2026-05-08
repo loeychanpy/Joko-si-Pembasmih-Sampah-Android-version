@@ -1,73 +1,63 @@
 package com.joko.pembasmihsampah.entities;
 
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.joko.pembasmihsampah.utils.Assets;
 
 /**
- * Platform Class (VISUAL PLATFORM)
- * Platform dirender sebagai block COKLAT solid (using Pixmap)
- * Digunakan sebagai ground/dasar untuk player berjalan
+ * Block Class (TEXTURED BLOCK)
+ * Block dirender menggunakan asset texture "tanah.png"
+ * Digunakan sebagai obstacle/rintangan atau dekoratif tiles
  *
- * Visual: Solid brown block
- * Purpose: Static collision surface
+ * Visual: Image texture (tanah.png)
+ * Purpose: Textured collision surface / obstacle
  */
-public class Platform {
+public class Block {
 
     private final float x;
     private final float y;
     private final float width;
     private final float height;
     private final Rectangle bounds;
-    private final Texture platformTexture;
-
-    // Collision tolerance
+    private final Texture blockTexture;
     private static final float COLLISION_TOLERANCE = 2f;
 
-    public Platform(float x, float y, float width, float height) {
+    public Block(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.bounds = new Rectangle(x, y, width, height);
 
-        // Create brown platform texture
-        this.platformTexture = createBrownPlatformTexture((int)width, (int)height);
+        // Load texture from asset
+        this.blockTexture = Assets.get("tanah.png", Texture.class);
     }
 
     /**
-     * Create solid brown texture
+     * Alternative constructor dengan custom texture
      */
-    private Texture createBrownPlatformTexture(int width, int height) {
-        com.badlogic.gdx.graphics.Pixmap pixmap =
-            new com.badlogic.gdx.graphics.Pixmap(width, height, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+    public Block(float x, float y, float width, float height, String texturePath) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.bounds = new Rectangle(x, y, width, height);
 
-        pixmap.setColor(139f/255f, 69f/255f, 19f/255f, 1f);
-        pixmap.fillRectangle(0, 0, width, height);
-
-        pixmap.setColor(101f/255f, 50f/255f, 15f/255f, 1f);
-        pixmap.drawRectangle(0, 0, width, height);
-
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-        return texture;
+        this.blockTexture = Assets.get(texturePath, Texture.class);
     }
 
     /**
      * Check collision dengan player
-     * Return: collision state (darat/tidak)
+     * SAMA INTERFACE seperti Platform untuk consistency!
      */
     public CollisionResult checkCollision(Rectangle playerBounds, float playerVelocityY) {
         if (!playerBounds.overlaps(bounds)) {
             return new CollisionResult(false, 0, "none");
         }
 
-        // Determine collision direction
         String direction = determineCollisionDirection(playerBounds, playerVelocityY);
-
         return new CollisionResult(true, this.y + this.height, direction);
     }
 
@@ -76,16 +66,16 @@ public class Platform {
      */
     private String determineCollisionDirection(Rectangle playerBounds, float playerVelocityY) {
         float playerBottom = playerBounds.y + playerBounds.height;
-        float platformTop = bounds.y + bounds.height;
-        float platformBottom = bounds.y;
+        float blockTop = bounds.y + bounds.height;
+        float blockBottom = bounds.y;
 
-        // Dari atas (landing)
-        if (playerVelocityY <= 0 && playerBottom >= platformTop - COLLISION_TOLERANCE) {
+        // Dari atas (landing on block)
+        if (playerVelocityY <= 0 && playerBottom >= blockTop - COLLISION_TOLERANCE) {
             return "top";
         }
 
-        // Dari bawah (head bump)
-        if (playerVelocityY > 0 && playerBounds.y <= platformBottom + COLLISION_TOLERANCE) {
+        // Dari bawah (head bump on block)
+        if (playerVelocityY > 0 && playerBounds.y <= blockBottom + COLLISION_TOLERANCE) {
             return "bottom";
         }
 
@@ -94,26 +84,36 @@ public class Platform {
     }
 
     /**
-     * Resolve collision - hanya untuk top collision
-     * Return: player new Y position
+     * Resolve collision - untuk top collision
      */
     public float resolveTopCollision(Rectangle playerBounds) {
         return bounds.y + bounds.height;
     }
 
     /**
-     * Resolve collision - untuk bottom collision (head bump)
+     * Resolve collision - untuk bottom collision
      */
     public float resolveBottomCollision(Rectangle playerBounds) {
         return bounds.y - playerBounds.height;
     }
 
     /**
-     * Render platform
+     * Resolve side collision
+     */
+    public float resolveSideCollision(Rectangle playerBounds, String side) {
+        if ("left".equals(side)) {
+            return bounds.x - playerBounds.width;
+        } else {
+            return bounds.x + bounds.width;
+        }
+    }
+
+    /**
+     * Render block dengan texture
      */
     public void render(SpriteBatch batch) {
-        if (platformTexture != null) {
-            batch.draw(platformTexture, x, y, width, height);
+        if (blockTexture != null) {
+            batch.draw(blockTexture, x, y, width, height);
         }
     }
 
@@ -125,18 +125,17 @@ public class Platform {
     public float getHeight() { return height; }
 
     public void dispose() {
-        if (platformTexture != null) {
-            platformTexture.dispose();
-        }
+        // Texture managed by AssetManager, tidak perlu dispose
     }
 
     /**
      * Inner class untuk collision result
+     * Sama seperti Platform.CollisionResult untuk consistency!
      */
     public static class CollisionResult {
         public boolean collided;
         public float landingY;
-        public String direction;  // "top", "bottom", "side", "none"
+        public String direction;
 
         public CollisionResult(boolean collided, float landingY, String direction) {
             this.collided = collided;
@@ -145,4 +144,3 @@ public class Platform {
         }
     }
 }
-

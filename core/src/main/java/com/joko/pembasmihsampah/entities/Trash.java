@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.joko.pembasmihsampah.utils.Assets;
 import com.joko.pembasmihsampah.utils.GameConstant;
 
 public class Trash {
@@ -14,15 +15,18 @@ public class Trash {
     private int num1, num2;
     private char operator;
     private int correctAnswer;
+    private boolean collected = false;
+
     private boolean showProblem = false;
     private final BitmapFont font;
+
+
 
     public Trash(float x, float y) {
         this.x = x;
         this.y = y;
-        this.texture = new Texture(Gdx.files.internal("images/bananas.png"));
+        this.texture = Assets.get("trash.png",Texture.class);
         this.font = new BitmapFont();
-
         generateProblem();
     }
 
@@ -45,11 +49,19 @@ public class Trash {
         }
     }
 
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void collect() {
+        collected = true;
+    }
+
     public void showProblem(boolean show) {
         showProblem = show;
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch,BitmapFont font) {
         // Draw trash object
         batch.draw(texture, x, y, 50, 50);
 
